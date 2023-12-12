@@ -6,10 +6,10 @@ path = os.getcwd()
 MAX = 500
 random_search = True
 info_max = True
-select_action = []  # Liste des actions selectionnées
-achat_action = 0  # Total des actions achetées
-benefice = 0  # Total des bénéfices
-benefice_max = 0
+select_buy = []  # Liste des actions selectionnées
+total_buy = 0  # Total des actions achetées
+profit = 0  # Total des bénéfices
+profit_max = 0
 nbr_temp = []  # Liste temporaire des index
 
 csv_path = os.path.join(path, "Actions.csv")
@@ -29,32 +29,31 @@ def calculate_percentage(get_i):
 
 def show_result():
     print("Liste des actions selectionnées: ")
-    for select_action1 in select_action:
-        print(select_action1["NomAction"],
-              "Coût par action :", select_action1["CoutParAction"],
-              "Bénéfice :", select_action1["PourcentageBenefice"])
-    print("Total des actions: ", achat_action)
-    print("Total des bénéfices : ", benefice)
-    return False
+    for select_buy1 in select_buy:
+        print(select_buy1["NomAction"],
+              "Coût par action :", select_buy1["CoutParAction"],
+              "Bénéfice :", select_buy1["PourcentageBenefice"])
+    print("Total des actions: ", total_buy)
+    print("Total des bénéfices : ", profit)
 
 
-def profit_control(benefice_max1):
-    benefice_max1 = float(benefice_max1)
-    if benefice_max1:
-        if benefice == benefice_max1:
+def profit_control(profit_max1):
+    profit_max1 = float(profit_max1)
+    if profit_max1:
+        if profit == profit_max1:
             show_result()
             info_max1 = False
             random_search1 = False
-            return benefice, info_max1, random_search1
-        if benefice > benefice_max1:
+            return profit, info_max1, random_search1
+        if profit > profit_max1:
             info_max1 = False
-            return benefice, info_max1, random_search
-        if benefice < benefice_max1:
+            return profit, info_max1, random_search
+        if profit < profit_max1:
             info_max1 = False
-            return benefice, info_max1, random_search
+            return profit, info_max1, random_search
     else:
         info_max1 = False
-        return benefice, info_max1, random_search
+        return profit, info_max1, random_search
 
 
 while random_search:
@@ -62,33 +61,30 @@ while random_search:
     if nbr_temp:
         if i not in nbr_temp:
             action, profit_result, cost_action = calculate_percentage(i)
-            achat_action += cost_action
-            if achat_action > MAX:
-                achat_action -= cost_action
-                info_benefice, info_max, random_search = profit_control(benefice_max)
-                if benefice > benefice_max:
-                    benefice_max = info_benefice
-            if achat_action <= MAX:
+            total_buy += cost_action
+            if total_buy > MAX:
+                total_buy -= cost_action
+                info_profit, info_max, random_search = profit_control(profit_max)
+                if profit > profit_max:
+                    profit_max = info_profit
+            if total_buy <= MAX:
                 if info_max:
-                    benefice += profit_result
+                    profit += profit_result
                     nbr_temp.append(i)
-                    select_action.append(action)
+                    select_buy.append(action)
 
     if not nbr_temp:
         info_max = True
         action, profit_result, cost_action = calculate_percentage(i)
-        benefice = profit_result
+        profit = profit_result
         nbr_temp.append(i)
-        select_action.append(action)
-        achat_action += cost_action
+        select_buy.append(action)
+        total_buy += cost_action
     if not random_search:
         random_search = False
     if not info_max:
-        select_action.clear()
+        select_buy.clear()
         nbr_temp.clear()
-        achat_action = 0
-        benefice = 0
+        total_buy = 0
+        profit = 0
 
-
-# k = achat_action * pourcentage
-# benefice = "{0:.2f}".format(k) # Permet d'afficher les 2 chiffres après la virgule

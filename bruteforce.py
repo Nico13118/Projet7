@@ -10,7 +10,7 @@ select_buy = []  # Liste des actions selectionnées
 total_buy = 0  # Total des actions achetées
 profit = 0  # Total des bénéfices
 profit_max = 0 # Bénéfice max
-nbr_temp = []  # Liste temporaire des index
+index_temp = []  # Liste temporaire des index
 
 """Ouverture du fichier csv et stockage des données dans la variable list_actions """
 csv_path = os.path.join(path, "Actions.csv")
@@ -22,7 +22,7 @@ with open(csv_path, newline='') as csvfile:
 def calculate_percentage(get_i):
     """
         Permet de selectionner une action, le coût de l'actionn, le pourcentage et calcul le bénéfice
-        
+
         :parameter: get_id : Index de l'action
         :returns: get_actions, get_profit_result, get_cost_action
     """
@@ -88,8 +88,8 @@ while random_search:
     - Si info_max n'est pas True : On réinitialise les variables.         
     """
     i = random.randint(0, 19)
-    if nbr_temp:
-        if i not in nbr_temp:
+    if index_temp:
+        if i not in index_temp:
             action, profit_result, cost_action = calculate_percentage(i)
             total_buy += cost_action
             if total_buy > MAX:
@@ -100,21 +100,21 @@ while random_search:
             if total_buy <= MAX:
                 if info_max:
                     profit += profit_result
-                    nbr_temp.append(i)
+                    index_temp.append(i)
                     select_buy.append(action)
 
-    if not nbr_temp:
+    if not index_temp:
         info_max = True
         action, profit_result, cost_action = calculate_percentage(i)
         profit = profit_result
-        nbr_temp.append(i)
+        index_temp.append(i)
         select_buy.append(action)
         total_buy += cost_action
     if not random_search:
         random_search = False
     if not info_max:
         select_buy.clear()
-        nbr_temp.clear()
+        index_temp.clear()
         total_buy = 0
         profit = 0
 
